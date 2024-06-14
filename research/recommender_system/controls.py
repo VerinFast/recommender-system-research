@@ -5,6 +5,12 @@
 MATRIX_SIZE: int = 50
 """The size (# of customers / goods) used to create a (n x n) matrix for the experiment"""
 
+UTILITY_MEAN: int = 4
+"""The mean used to generate the users' utility per good"""
+
+UTILITY_STD: int = 2
+"""The standard deviation used to generate the users' utility per good"""
+
 
 ###------------------------------------------------------------------------------###
 """A list of constant variables used in (research/recommender_system/__init__.py)"""
@@ -30,5 +36,5 @@ ZERO_PERCENT: float = 0.2
 POS_PERCENT: float = 0.1
 """Percent (weighted chance) of randomly generated user reviews containing a positive review (1)"""
 
-NONE_PERCENT: float = 0.6
-"""Percent (weighted chance) of randomly generated user reviews that have not been used (None)"""
+BLANK_PERCENT: float = 0.6
+"""Percent (weighted chance) of randomly generated user reviews that have not been used (np.nan)"""

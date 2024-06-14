@@ -12,7 +12,7 @@ from . import controls as const
 class Person:
 	"""The Person class contains functions related to person including "using goods", "leaving reviews", and "getting recommended more goods"."""
 
-	def __init__(self, name: str, reviews: npt.NDArray[np.int_] = np.array([])) -> None:
+	def __init__(self, name: str, reviews: npt.NDArray[np.float_] = np.array([])) -> None:
 		self.name = name.title()
 
 		if not reviews.any():
@@ -23,13 +23,13 @@ class Person:
 	def __str__(self) -> str:
 			return f"{self.name}'s reviews:\n{self.reviews}"
 
-	def generate_reviews(self) -> npt.NDArray[np.int_]:
+	def generate_reviews(self) -> npt.NDArray[np.float_]:
 		"""Generate sample user reviews for quick testing.
 
 		Returns:
-				npt.NDArray[np.int_]: A set of reviews containing the values 0 (20%), 1 (10%), -1 (10%), and None (60%)
+				npt.NDArray[np.float_]: A set of reviews containing the values 0 (20%), 1 (10%), -1 (10%), and np.nan (60%)
 		"""
-		return np.random.choice(np.array([0, 1, -1, None]), const.MATRIX_SIZE, p = np.array([const.ZERO_PERCENT, const.POS_PERCENT, const.NEG_PERCENT, const.NONE_PERCENT]))
+		return np.random.choice(np.array([0, 1, -1, np.nan]), const.MATRIX_SIZE, p = np.array([const.ZERO_PERCENT, const.POS_PERCENT, const.NEG_PERCENT, const.BLANK_PERCENT]))
 
 	@staticmethod
 	def rand_name(len: int) -> str:
@@ -44,6 +44,7 @@ class Person:
 		return ''.join(random.choices(string.ascii_lowercase, k = len)).title()
 
 
+
 class Population:
 	"""The population class contains functions related to calling Person classes across the entire matrix."""
 
@@ -51,7 +52,8 @@ class Population:
 		"""Create a population.
 
 		Args:
-				people (list[Person], optional): The list of type Person to be included in the population. If none is provided, a Population of size controls.MATRIX_SIZE is created.
+				people (list[Person], optional): people (list[Person], optional): The list of type Person to be included in the population. If none is provided, a Population of size controls.MATRIX_SIZE is created.
+				full_gen (bool, optional): If True, create randomly generated reviews, else fill all reviews with np.nan
 		"""
 		if not people:
 			# If no list provided, generate a population
@@ -66,10 +68,10 @@ class Population:
 		"""Create an N length list of "people" containing randomly generated "names" and blank reviews.
 
 		Args:
-				generate_reviews (bool): If True randomly generate reviews, else fill with NoneType objects
+				generate_reviews (bool): If True randomly generate reviews, else fill with np.nan
 
 		Returns:
-				list[Person]: A list of Person objects with reviews containing only NoneType objects
+				list[Person]: A list of Person objects with reviews
 		"""
 		pop: list[Person] = []
 		
@@ -81,15 +83,15 @@ class Population:
 				# Let Person class generate random reviews
 				pop.append(Person(name))
 			else:
-				# Create blank list of reviews (filled with None)
-				pop.append(Person(name, np.full(const.MATRIX_SIZE, None)))
+				# Create blank list of reviews (filled with np.nan)
+				pop.append(Person(name, np.full(const.MATRIX_SIZE, np.nan)))
 
 		return pop
 
-	def get_review_table(self)-> npt.NDArray[np.int_]:
+	def get_review_table(self)-> npt.NDArray[np.float_]:
 			"""Combine all individual 1D numpy arrays stored in people -> list[Person] into a 2D numpy array
 
 			Returns:
-					npt.NDArray[np.int_]: A 2D numpy array of all reviews
+					npt.NDArray[np.float_]: A 2D numpy array of all reviews
 			"""
 			return np.vstack(list(map(lambda x : x.reviews, self.people)))
