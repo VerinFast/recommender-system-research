@@ -3,13 +3,28 @@
 ###--------------------------------------------------------------------------###
 
 MATRIX_SIZE: int = 50
-"""The size (# of customers / goods) used to create a (n x n) matrix for the experiment"""
+"""The size (# of users / goods) used to create a (n x n) matrix for the experiment"""
+
+NUMBER_OF_TICKS: int = 100
+"""The amount of time / number of loops that the experiment should run for"""
 
 UTILITY_MEAN: int = 4
 """The mean used to generate the users' utility per good"""
 
 UTILITY_STD: int = 2
 """The standard deviation used to generate the users' utility per good"""
+
+USER_BUDGET: int = 10
+"""The set "budget" (time, money, etc) a user has to consume goods per tick"""
+
+CONSIDERATION_COST: int = 1
+"""The "cost" to the user when looking for a good to be recommended to them"""
+
+USAGE_COST: int = 1
+"""The "cost" to the user when using the good that has been recommended to them"""
+
+COUNT_NEGATIVE_REVIEWS: bool = False
+"""Whether or not to count negative reviews when finding recommendations for a user"""
 
 
 ###------------------------------------------------------------------------------###
