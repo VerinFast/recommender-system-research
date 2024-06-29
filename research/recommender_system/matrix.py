@@ -11,15 +11,43 @@ from . import controls as const
 from . import people as ppl
 
 
+class UtilMatrix:
+	"""A matrix (2D numpy array) containing a Person's gain/loss in utility per good."""
+
+	def __init__(self, mean: int = const.UTILITY_MEAN, std: int = const.UTILITY_STD) -> None:
+		self.mean = mean; self.std = std
+		self.matrix = np.random.normal(mean, std, (const.MATRIX_SIZE, const.MATRIX_SIZE))
+
+	def __str__(self) -> str:
+		return f"{self.matrix}"
+
+	def add_user(self, user: ppl.Person) -> None:
+		"""Adds a new user to the utility matrix and generates a utility array for them.
+
+		Args:
+				user (ppl.Person): The user to be added to the utility matrix
+		"""
+		# Create utility array for new user
+		user_utility_array = np.random.normal(self.mean, self.std, const.MATRIX_SIZE)
+		user.utility = user_utility_array
+
+		# Add new user to matrix
+		self.matrix = np.vstack([self.matrix, user_utility_array])
+
+
 class RevMatrix:
 	"""A matrix (2D numpy array) containing user reviews."""
 
-	def __init__(self, pop: ppl.Population = ppl.Population()) -> None:
+	def __init__(self, pop: ppl.Population = ppl.Population(), utility_matrix: NDArray[np.float_] = UtilMatrix().matrix) -> None:
 		self.pop = pop
 		self.matrix = pop.get_review_table()
 
-    # Make sure reviews are always a representation of the overall matrix
+		# Make sure reviews are always a representation of the overall matrix
 		self.pop.soft_copy_matrix(self.matrix)
+
+		# Assign users their possible utility
+		for idx, person in enumerate(self.pop.people):
+			person.utility = utility_matrix[idx]
 
 	def __str__(self) -> str:
 		return f"{self.matrix}"
@@ -88,8 +116,8 @@ class RevMatrix:
 
 		Args:
 				user (ppl.Person): The base user to find the most similar Person to
-				count_dislikes (bool, optional): Whether to count likes (+1) ratings when finding similarities, defaults to True
-				count_likes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities, defaults to True
+				count_dislikes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities, defaults to True
+				count_likes (bool, optional): Whether to count likes (+1) ratings when finding similarities, defaults to True
 		* If both count_likes and count_dislikes are True / False, they will both be counted
 
 		Returns:
@@ -97,18 +125,18 @@ class RevMatrix:
 		"""
 
 		# Find which comparison method to use, defaults to counting both likes and dislikes
-		# comp_list contains the total count of matching likes and/or dislikes shared between the two users
-		if not count_dislikes:
+		# "comp_list" contains the total count of matching likes and/or dislikes shared between the two users
+		if count_likes and not count_dislikes:
 			comp_list = np.apply_along_axis(self.count_shared_likes, 1, self.matrix, user.reviews)
-		elif not count_likes:
+		elif count_dislikes and not count_likes:
 			comp_list = np.apply_along_axis(self.count_shared_dislikes, 1, self.matrix, user.reviews)
 		else:
 			comp_list = np.apply_along_axis(self.count_shared_likes_and_dislikes, 1, self.matrix, user.reviews)
 
-		# Find the indexes of the top two most similar results (in case first result is user.review, in which case the other index is returned)
+		# Find the indexes of the top two most similar results (in case first result is user.review)
 		idx_most_similar: list[int] = heapq.nlargest(2, range(len(comp_list)), key=comp_list.__getitem__)
 
-		# Return the non-matching Person object
+		# Return the index of the non-matching Person object
 		recommend_not_same: int = idx_most_similar[-1] if self.pop.people[idx_most_similar[0]] == user else idx_most_similar[0]
 		
 		return self.pop.people[recommend_not_same]
@@ -118,8 +146,8 @@ class RevMatrix:
 
 		Args:
 				user (ppl.Person): The base user to find the most similar Person to
-				count_dislikes (bool, optional): Whether to count likes (+1) ratings when finding similarities, defaults to True
-				count_likes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities, defaults to True
+				count_dislikes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities, defaults to True
+				count_likes (bool, optional): Whether to count likes (+1) ratings when finding similarities, defaults to True
 		* If both count_likes and count_dislikes are True / False, they will both be counted
 
 		Returns:
@@ -128,34 +156,39 @@ class RevMatrix:
 
 		# Find which comparison method to use, defaults to counting both likes and dislikes
 		# "comp_list" contains the total count of matching likes and/or dislikes shared between the two users
-		if not count_dislikes:
+		if count_likes and not count_dislikes:
 			comp_list = np.apply_along_axis(self.count_shared_likes, 1, self.matrix, user.reviews)
-		elif not count_likes:
+		elif count_dislikes and not count_likes:
 			comp_list = np.apply_along_axis(self.count_shared_dislikes, 1, self.matrix, user.reviews)
 		else:
 			comp_list = np.apply_along_axis(self.count_shared_likes_and_dislikes, 1, self.matrix, user.reviews)
 
-		# Find the indexes of the top two most similar results (in case first result is user.review, in which case the other index is returned)
-		idx_most_similar: list[int] = heapq.nlargest(2, range(len(comp_list)), key = comp_list.__getitem__)
+		# Find the indexes of the top two most similar results (in case first result is user.review)
+		idx_most_similar: list[int] = heapq.nlargest(2, range(len(comp_list)), key=comp_list.__getitem__)
 
 		# Return the index of the non-matching Person object
 		recommend_not_same: int = idx_most_similar[-1] if self.pop.people[idx_most_similar[0]] == user else idx_most_similar[0]
 
-		# Get noiseless comp value from comp_list
+		# Get noiseless comparison value from comp_list
 		best_comp: int = math.floor(comp_list[recommend_not_same])
 
-		# Find list of indexes with matching noiseless comp values
+		# Find list of indexes with matching noiseless comparison values
 		best_comps: NDArray[np.int_] = np.flatnonzero(comp_list.astype(int) == best_comp)
+
+		# Remove user index from list of best indexes
+		best_comps = best_comps[best_comps != self.pop.people.index(user)]
 
 		return [self.pop.people[i] for i in best_comps]
 
+	def add_user(self, user: ppl.Person) -> None:
+		"""Adds a new user to the review matrix.
 
+		Args:
+				user (ppl.Person): The user to be added to the review matrix
+		"""
+		# Add new user to Population
+		self.pop.people.append(user)
 
-class UtilMatrix:
-	"""A matrix (2D numpy array) containing a Person's gain/loss in utility per good."""
-
-	def __init__(self, mean:int = const.UTILITY_MEAN, std:int = const.UTILITY_STD) -> None:
-		self.matrix = np.random.normal(mean, std, (const.MATRIX_SIZE, const.MATRIX_SIZE))
-
-	def __str__(self) -> str:
-		return f"{self.matrix}"
+		# Add new user to matrix
+		self.matrix = np.vstack([self.matrix, user.reviews])
+		user.reviews = self.matrix[-1,:]
