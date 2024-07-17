@@ -27,15 +27,26 @@ COUNT_NEGATIVE_REVIEWS: bool = True
 """Whether or not to count negative reviews when finding recommendations for a user"""
 
 
+###-----------------------------------------------------------###
+"""A list of constant variables used during the final analysis"""
+###-----------------------------------------------------------###
+
+ANALYZE_N_GOODS: int = 10
+"""The number of most and least popular goods that should be analyzed in each test"""
+
+WELL_SERVED_PERCENT: float = 0.8
+"""The percent of the optimal utility for a user to be used as a threshold to determine if a user was "well served" by the recommender system"""
+
+
 ###------------------------------------------------------------------------------###
 """A list of constant variables used in (research/recommender_system/__init__.py)"""
 ###------------------------------------------------------------------------------###
 
-BLANK_REP: str = "·"
-"""The character used to represent an empty (NoneType object) space in matrix printouts"""
-
-SEED: int = 10
+SEED: int = 20
 """A seed to generate random numbers from for test reproducibility"""
+
+BLANK_REP: str = "·"
+"""The character used to represent an empty (np.nan) space in matrix printouts"""
 
 
 ###------------------------------------------------------###
@@ -43,13 +54,13 @@ SEED: int = 10
 ###------------------------------------------------------###
 
 NEG_PERCENT: float = 0.075
-"""Percent (weighted chance) of randomly generated user reviews containing a negative review (-1)"""
+"""Weighted chance of randomly generated user reviews containing a negative review (-1)"""
 
 ZERO_PERCENT: float = 0.35
-"""Percent (weighted chance) of randomly generated user reviews containing a neutral / no review (0)"""
+"""Weighted chance of randomly generated user reviews containing a neutral / no review (0)"""
 
 POS_PERCENT: float = 0.075
-"""Percent (weighted chance) of randomly generated user reviews containing a positive review (1)"""
+"""Weighted chance of randomly generated user reviews containing a positive review (1)"""
 
 BLANK_PERCENT: float = 0.5
-"""Percent (weighted chance) of randomly generated user reviews that have not been used (np.nan)"""
+"""Weighted chance of randomly generated user reviews that have not been used (np.nan)"""
