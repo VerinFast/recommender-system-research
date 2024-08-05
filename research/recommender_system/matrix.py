@@ -38,9 +38,9 @@ class UtilMatrix:
 class RevMatrix:
 	"""A matrix (2D numpy array) containing user reviews."""
 
-	def __init__(self, pop: ppl.Population = ppl.Population(), utility_matrix: NDArray[np.float_] = UtilMatrix().matrix) -> None:
-		self.pop = pop
-		self.matrix = pop.get_review_table()
+	def __init__(self, pop: ppl.Population|type[ppl.Population] = ppl.Population, utility_matrix: NDArray[np.float_] = UtilMatrix().matrix) -> None:
+		self.pop = pop if not(callable(pop)) else pop()
+		self.matrix = self.pop.get_review_table()
 
 		# Make sure reviews are always a representation of the overall matrix
 		self.pop.soft_copy_matrix(self.matrix)
@@ -111,12 +111,12 @@ class RevMatrix:
 
 		return shared_likes + shared_dislikes + (random.random() if rand else 0)
 
-	def find_most_similar(self, user: ppl.Person, count_dislikes: bool = True, count_likes: bool = True) -> ppl.Person:
+	def find_most_similar(self, user: ppl.Person, count_dislikes: bool = const.COUNT_NEGATIVE_REVIEWS, count_likes: bool = True) -> ppl.Person:
 		"""Finds the Person who's reviews are most similar to the provided user using the criteria provided.
 
 		Args:
 				user (ppl.Person): The base user to find the most similar Person to
-				count_dislikes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities, defaults to True
+				count_dislikes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities
 				count_likes (bool, optional): Whether to count likes (+1) ratings when finding similarities, defaults to True
 		* If both count_likes and count_dislikes are True / False, they will both be counted
 
@@ -141,12 +141,12 @@ class RevMatrix:
 		
 		return self.pop.people[recommend_not_same]
 
-	def find_all_most_similar(self, user: ppl.Person, count_dislikes: bool = True, count_likes: bool = True) -> list[ppl.Person]:
+	def find_all_most_similar(self, user: ppl.Person, count_dislikes: bool = const.COUNT_NEGATIVE_REVIEWS, count_likes: bool = True) -> list[ppl.Person]:
 		"""Finds the Person(s) who's reviews are most similar to the provided user using the criteria provided.
 
 		Args:
 				user (ppl.Person): The base user to find the most similar Person to
-				count_dislikes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities, defaults to True
+				count_dislikes (bool, optional): Whether to count dislikes (-1) ratings when finding similarities
 				count_likes (bool, optional): Whether to count likes (+1) ratings when finding similarities, defaults to True
 		* If both count_likes and count_dislikes are True / False, they will both be counted
 

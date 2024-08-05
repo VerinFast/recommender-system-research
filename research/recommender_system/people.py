@@ -32,7 +32,7 @@ class Person:
 			self.utility = utility
 
 	def __str__(self) -> str:
-			return f"\n{self.name}'s reviews:\n{self.reviews}"
+			return f"\n{self.name}'s reviews: {self.reviews}"
 
 	def generate_reviews(self) -> NDArray[np.float_]:
 		"""Generate sample user reviews for quick testing.
@@ -77,7 +77,7 @@ class Population:
 			self.people = people
 
 	def __str__(self) -> str:
-		return "\n".join([str(ppl).replace("\n"," ") for ppl in self.people])
+		return "\n".join([str(ppl) for ppl in self.people])
 
 	def generate_population(self, generate_reviews: bool) -> list[Person]:
 		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated "names" and blank reviews.
