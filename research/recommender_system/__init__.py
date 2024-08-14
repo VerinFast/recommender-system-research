@@ -9,4 +9,4 @@ from . import controls as const
 random.seed(const.SEED)
 np.random.seed(const.SEED)
 
-np.set_printoptions(threshold = 10, edgeitems = 5, formatter = {"float": lambda x: ("" if x < 0 else " ") + f'{int(x)}' if x == x else f" {const.BLANK_REP}"})
+np.set_printoptions(threshold = 20, edgeitems = 5, formatter = {"float": lambda x: ("" if int(x) < 0 or int(x) >= 10 else " ") + f'{int(x)}' if x == x else f" {const.BLANK_REP}"})

@@ -12,18 +12,27 @@ from . import controls as const
 class Person:
 	"""The Person class contains functions related to person including "using goods", "leaving reviews", and "getting recommended more goods"."""
 
-	def __init__(self, name: str, reviews: NDArray[np.float_] = np.array([])) -> None:
+	def __init__(self, name: str, reviews: NDArray[np.float_] = np.array([]), utility: NDArray[np.float_] = np.array([]), gen_reviews: bool = False) -> None:
 		self.name = name.title()
 		self.budget = const.USER_BUDGET
 		self.generated_utility: float = 0
 
-		if not reviews.any():
+		# Assign reviews to a Person
+		if gen_reviews:
 			self.reviews = self.generate_reviews()
+		elif not reviews.any():
+			self.reviews = np.full(const.MATRIX_SIZE, np.nan)
 		else:
 			self.reviews = reviews
 
+	 # Assign possible utility to a Person
+		if not utility.any():
+			self.utility = np.random.normal(const.UTILITY_MEAN, const.UTILITY_STD, const.MATRIX_SIZE)
+		else:
+			self.utility = utility
+
 	def __str__(self) -> str:
-			return f"\n{self.name}'s reviews:\n{self.reviews}"
+			return f"\n{self.name}'s reviews: {self.reviews}"
 
 	def generate_reviews(self) -> NDArray[np.float_]:
 		"""Generate sample user reviews for quick testing.
@@ -68,7 +77,7 @@ class Population:
 			self.people = people
 
 	def __str__(self) -> str:
-		return "\n".join([str(ppl).replace("\n"," ") for ppl in self.people])
+		return "\n".join([str(ppl) for ppl in self.people])
 
 	def generate_population(self, generate_reviews: bool) -> list[Person]:
 		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated "names" and blank reviews.
@@ -87,10 +96,10 @@ class Population:
 
 			if generate_reviews:
 				# Let Person class generate random reviews
-				pop.append(Person(name))
+				pop.append(Person(name, gen_reviews=True))
 			else:
 				# Create blank list of reviews (filled with np.nan)
-				pop.append(Person(name, np.full(const.MATRIX_SIZE, np.nan)))
+				pop.append(Person(name))
 
 		return pop
 
@@ -104,11 +113,11 @@ class Population:
 
 	def soft_copy_matrix(self, matrix: NDArray[np.float_]) -> None:
 		"""Makes sure each Person-in-Population's reviews are a view of the matrix and not an independent copy.
-    This allows them to be manipulated through the greater matrix or through Person.reviews so that a user's reviews stay consistent.
+		This allows them to be manipulated through the greater matrix or through Person.reviews so that a user's reviews stay consistent.
 
-    Args:
-        matrix (NDArray[np.float_]): The matrix to be split up and copied
-    """
+		Args:
+				matrix (NDArray[np.float_]): The matrix to be split up and copied
+		"""
 		for i, person in enumerate(self.people):
 			person.reviews = matrix[i,:]
 
