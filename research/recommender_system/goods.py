@@ -10,22 +10,24 @@ from . import matrix as mtx
 from . import people as ppl
 
 
-def find_most_popular(matrix: NDArray[np.float_], count_dislikes: bool = const.COUNT_NEGATIVE_REVIEWS) -> int:
-	"""Find the location of the most popular good based on positive reviews or positive and negative reviews.
+def find_most_popular(matrix: NDArray[np.float_]) -> int:
+	"""Find the location of the most popular good based on positive and negative reviews.
 
 	Args:
 			matrix (NDArray[np.float_]): A 2D numpy array containing the reviews
-			count_dislikes (bool, optional): Whether to sum both negative and positive reviews
 
 	Returns:
 			int: The index of the most popular item. If multiple items receive the same popularity score, a random good is chosen from the sublist.
 	"""
 
 	# Count reviews to find each good's "popularity score"
-	if count_dislikes:
-		popularity_array = np.nansum(matrix, axis=0)
-	else:
-		popularity_array = np.nansum(matrix > 0, axis=0)
+	popularity_array = np.nansum(matrix, axis=0)
+
+	# Normalize values against the mean to avoid picking the most used item
+	if const.RATING_SYSTEM_SCALE != 0:
+		mean = ((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN
+		count_num_goods = (~np.isnan(matrix)).sum(0)
+		popularity_array -= count_num_goods * mean
 
 	# Find max value
 	max_popularity = np.max(popularity_array)
@@ -77,12 +79,37 @@ def give_rating(utility: float) -> int:
 			int: The user's rating
 	"""
 
-	if utility > (const.UTILITY_MEAN + const.UTILITY_STD):
-		# Rate movie positively
-		return 1
-	elif utility < (const.UTILITY_MEAN - const.UTILITY_STD):
-		# Rate movie negatively
-		return -1
-	else:
-		# Leave no / a neutral rating
-		return 0
+	def rating_threshold(rating: int) -> float:
+		"""Generate the threshold for each rating by breaking the normal distribution into const.RATING_SYSTEM_SCALE "bins" for each number in the rating system.
+
+		Args:
+				rating (int): The rating to create the threshold for
+
+		Returns:
+				float: The max threshold of the "bin"
+		"""
+
+		# Assign the mean and standard deviation of the rating system
+		# If none is given or the values are out of the possible range, use the average of the minimum and maximum ratings (1 an const.RATING_SYSTEM_SCALE)
+		mean = ((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN
+		std  = ((const.RATING_SYSTEM_SCALE - 1) / 6) if (const.RATING_SYSTEM_STD < 0 or const.RATING_SYSTEM_STD > ((const.RATING_SYSTEM_SCALE + 1) / 2)) else const.RATING_SYSTEM_STD
+	
+		return ((((rating + 0.5) - mean) / std) * const.UTILITY_STD) + const.UTILITY_MEAN
+
+	if const.RATING_SYSTEM_SCALE == 0: # Default [-1, 0, 1]
+		if utility > (const.UTILITY_MEAN + const.UTILITY_STD):
+			# Rate movie positively
+			return 1
+		elif utility < (const.UTILITY_MEAN - const.UTILITY_STD):
+			# Rate movie negatively
+			return -1
+		else:
+			# Leave no / a neutral rating
+			return 0
+	else: # For scales of [1 to n]
+		# Create "bins" for each possible rating
+		for threshold in range(1, const.RATING_SYSTEM_SCALE):
+			if utility <= rating_threshold(threshold):
+				return threshold
+		# If the given utility does not fit into the lower bins, return the max rating
+		return const.RATING_SYSTEM_SCALE

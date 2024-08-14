@@ -8,10 +8,10 @@ MATRIX_SIZE: int = 20
 NUMBER_OF_TICKS: int = 10
 """The amount of time / number of loops that the experiment should run for"""
 
-UTILITY_MEAN: int = 4
+UTILITY_MEAN: float = 4
 """The mean used to generate the users' utility per good"""
 
-UTILITY_STD: int = 2
+UTILITY_STD: float = 2
 """The standard deviation used to generate the users' utility per good"""
 
 USER_BUDGET: int = 10
@@ -23,8 +23,22 @@ CONSIDERATION_COST: int = 1
 USAGE_COST: int = 5
 """The "cost" to the user when using the good that has been recommended to them"""
 
-COUNT_NEGATIVE_REVIEWS: bool = True
-"""Whether or not to count negative reviews when finding recommendations for a user"""
+
+###------------------------------------------------------------------------------------###
+"""A list of constant variables that can be used to manipulate the users' rating system"""
+###------------------------------------------------------------------------------------###
+
+RATING_SYSTEM_SCALE: int = 10
+"""The rating system used by the users to rate the goods they consume:
+   0) [-1, 0, 1]
+   n) [1 to n] where n is the int provided
+"""
+
+RATING_SYSTEM_MEAN: float = -1
+"""The mean of the rating system, if set to -1 the ratings are normally distributed, and if using the default rating scale this value is ignored"""
+
+RATING_SYSTEM_STD: float = -1
+"""The standard deviation of the rating system, if set to -1 the ratings are normally distributed, and if using the default rating scale, this value is ignored"""
 
 
 ###-----------------------------------------------------------###
@@ -47,20 +61,3 @@ SEED: int = 20
 
 BLANK_REP: str = "·"
 """The character used to represent an empty (np.nan) space in matrix printouts"""
-
-
-###------------------------------------------------------###
-"""A list of constant variables used for testing purposes"""
-###------------------------------------------------------###
-
-NEG_PERCENT: float = 0.075
-"""Weighted chance of randomly generated user reviews containing a negative review (-1)"""
-
-ZERO_PERCENT: float = 0.35
-"""Weighted chance of randomly generated user reviews containing a neutral / no review (0)"""
-
-POS_PERCENT: float = 0.075
-"""Weighted chance of randomly generated user reviews containing a positive review (1)"""
-
-BLANK_PERCENT: float = 0.5
-"""Weighted chance of randomly generated user reviews that have not been used (np.nan)"""
