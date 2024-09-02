@@ -28,17 +28,17 @@ USAGE_COST: int = 5
 """A list of constant variables that can be used to manipulate the users' rating system"""
 ###------------------------------------------------------------------------------------###
 
-RATING_SYSTEM_SCALE: int = 10
+RATING_SYSTEM_SCALE: int = 0
 """The rating system used by the users to rate the goods they consume:
    0) [-1, 0, 1]
    n) [1 to n] where n is the int provided
 """
 
 RATING_SYSTEM_MEAN: float = -1
-"""The mean of the rating system, if set to -1 the ratings are normally distributed, and if using the default rating scale this value is ignored"""
+"""The mean of the rating system, if set to -1 the ratings are normally distributed arounf the mean, and if using the default rating scale this value is ignored"""
 
 RATING_SYSTEM_STD: float = -1
-"""The standard deviation of the rating system, if set to -1 the ratings are normally distributed, and if using the default rating scale, this value is ignored"""
+"""The standard deviation of the rating system, if set to -1 the ratings are normally distributed around the mean, and if using the default rating scale this value is ignored"""
 
 
 ###-----------------------------------------------------------###
@@ -46,7 +46,7 @@ RATING_SYSTEM_STD: float = -1
 ###-----------------------------------------------------------###
 
 ANALYZE_N_GOODS: int = 10
-"""The number of most and least popular goods that should be analyzed in each test"""
+"""The number of most and least popular goods that should be analyzed during each test"""
 
 WELL_SERVED_PERCENT: float = 0.8
 """The percent of the optimal utility for a user to be used as a threshold to determine if a user was "well served" by the recommender system"""

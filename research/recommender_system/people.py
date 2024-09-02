@@ -10,17 +10,15 @@ from . import controls as const
 
 
 class Person:
-	"""The Person class contains functions related to person including "using goods", "leaving reviews", and "getting recommended more goods"."""
+	"""The Person class represents the individual users of the goods, and contains their names, reviews, and true utility."""
 
-	def __init__(self, name: str, reviews: NDArray[np.float_] = np.array([]), utility: NDArray[np.float_] = np.array([]), gen_reviews: bool = False) -> None:
+	def __init__(self, name: str, reviews: NDArray[np.float_] = np.array([]), utility: NDArray[np.float_] = np.array([])) -> None:
 		self.name = name.title()
 		self.budget = const.USER_BUDGET
 		self.generated_utility: float = 0
 
 		# Assign reviews to a Person
-		if gen_reviews:
-			self.reviews = self.generate_reviews()
-		elif not reviews.any():
+		if not reviews.any():
 			self.reviews = np.full(const.MATRIX_SIZE, np.nan)
 		else:
 			self.reviews = reviews
@@ -33,14 +31,6 @@ class Person:
 
 	def __str__(self) -> str:
 			return f"\n{self.name}'s reviews: {self.reviews}"
-
-	def generate_reviews(self) -> NDArray[np.float_]:
-		"""Generate sample user reviews for quick testing.
-
-		Returns:
-				NDArray[np.float_]: A set of reviews containing the values 0 (20%), 1 (10%), -1 (10%), and np.nan (60%)
-		"""
-		return np.random.choice(np.array([0, 1, -1, np.nan]), const.MATRIX_SIZE, p=np.array([const.ZERO_PERCENT, const.POS_PERCENT, const.NEG_PERCENT, const.BLANK_PERCENT]))
 
 	def reset_budget(self) -> None:
 		"""Reset the user's budget to the constant defined default."""
@@ -61,9 +51,9 @@ class Person:
 
 
 class Population:
-	"""The population class contains functions related to calling Person classes across the entire matrix."""
+	"""The Population class contains functions related to calling Person classes across the entire matrix."""
 
-	def __init__(self, people: list[Person] = [], full_gen: bool = False) -> None:
+	def __init__(self, people: list[Person] = []) -> None:
 		"""Create a population.
 
 		Args:
@@ -72,18 +62,15 @@ class Population:
 		"""
 		if not people:
 			# If no list provided, generate a population
-			self.people = self.generate_population(full_gen)
+			self.people = self.generate_population()
 		else:
 			self.people = people
 
 	def __str__(self) -> str:
 		return "\n".join([str(ppl) for ppl in self.people])
 
-	def generate_population(self, generate_reviews: bool) -> list[Person]:
+	def generate_population(self) -> list[Person]:
 		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated "names" and blank reviews.
-
-		Args:
-				generate_reviews (bool): If True randomly generate reviews, else fill with np.nan
 
 		Returns:
 				list[Person]: A list of Person objects with reviews
@@ -94,22 +81,18 @@ class Population:
 			# Randomly generate a name with 5 characters
 			name = Person.rand_name(len=5)
 
-			if generate_reviews:
-				# Let Person class generate random reviews
-				pop.append(Person(name, gen_reviews=True))
-			else:
-				# Create blank list of reviews (filled with np.nan)
-				pop.append(Person(name))
+			# Create blank list of reviews (filled with np.nan)
+			pop.append(Person(name))
 
 		return pop
 
-	def get_review_table(self)-> NDArray[np.float_]:
-			"""Combine all individual 1D numpy arrays stored in people -> list[Person] into a 2D numpy array
+	def get_review_table(self) -> NDArray[np.float_]:
+		"""Combine all individual 1D numpy arrays stored in people -> list[Person] into a 2D numpy array
 
-			Returns:
-					NDArray[np.float_]: A 2D numpy array of all reviews
-			"""
-			return np.vstack(list(map(lambda x : x.reviews, self.people)))
+		Returns:
+				NDArray[np.float_]: A 2D numpy array of all reviews
+		"""
+		return np.vstack(list(map(lambda x : x.reviews, self.people)))
 
 	def soft_copy_matrix(self, matrix: NDArray[np.float_]) -> None:
 		"""Makes sure each Person-in-Population's reviews are a view of the matrix and not an independent copy.

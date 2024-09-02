@@ -118,7 +118,7 @@ def likely_recommended(most: int, least: int, count: int = 1) -> str:
 		return f"The {'' if count == 1 else f'{count} '}most popular good{'' if count == 1 else 's'} and {'' if count == 1 else f'{count} '}least popular good{'' if count == 1 else 's'} were not recommended"
 	elif most == 0:
 		return f"The {'' if count == 1 else f'{count} '}least popular good{f' \033[2m({least}x)\033[0m was' if count == 1 else f's \033[2m({least}x)\033[0m were'} recommended, but the {'' if count == 1 else f'{count} '}most popular good{' was' if count == 1 else 's were'} not"
-	elif least ==0:
+	elif least == 0:
 		return f"The {'' if count == 1 else f'{count} '}most popular good{f' \033[2m({most}x)\033[0m was' if count == 1 else f's \033[2m({most}x)\033[0m were'} recommended, but the {'' if count == 1 else f'{count} '}least popular good{' was' if count == 1 else 's were'} not"
 	elif most == least:
 		return f"The {'' if count == 1 else f'{count} '}most popular good{f' \033[2m({most}x)\033[0m was' if count == 1 else f's \033[2m({most}x)\033[0m were'} recommended the same amount of times as the {'' if count == 1 else f'{count} '}least popular good{f' \033[2m({least}x)\033[0m' if count == 1 else f's \033[2m({least}x)\033[0m'}"
