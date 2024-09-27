@@ -35,7 +35,7 @@ RATING_SYSTEM_SCALE: int = 0
 """
 
 RATING_SYSTEM_MEAN: float = -1
-"""The mean of the rating system, if set to -1 the ratings are normally distributed arounf the mean, and if using the default rating scale this value is ignored"""
+"""The mean of the rating system, if set to -1 the ratings are normally distributed around the mean, and if using the default rating scale this value is ignored"""
 
 RATING_SYSTEM_STD: float = -1
 """The standard deviation of the rating system, if set to -1 the ratings are normally distributed around the mean, and if using the default rating scale this value is ignored"""

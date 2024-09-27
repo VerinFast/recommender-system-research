@@ -10,7 +10,7 @@ from . import matrix as mtx
 from . import people as ppl
 
 
-def find_most_popular(matrix: NDArray[np.float_]) -> int:
+def find_most_popular_location(matrix: NDArray[np.float_]) -> int:
 	"""Find the location of the most popular good based on positive and negative reviews.
 
 	Args:
@@ -67,7 +67,7 @@ def recommend_good(user: ppl.Person, matrix: mtx.RevMatrix, previously_recommend
 	similar_users = ppl.Population(most_similar).get_review_table()
 
 	# Return the index of the most popular good from recommendations
-	return unused_and_not_recommended[find_most_popular(similar_users[:, unused_and_not_recommended])]
+	return unused_and_not_recommended[find_most_popular_location(similar_users[:, unused_and_not_recommended])]
 
 def give_rating(utility: float) -> int:
 	"""Rate the good recommended to the user based on its utility.

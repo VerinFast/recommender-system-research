@@ -33,6 +33,9 @@ review_matrix = mtx.RevMatrix(utility_matrix=utility_matrix.matrix)
 
 ### Run simulation:
 for tick in range(const.NUMBER_OF_TICKS):
+	# Print out current tick information
+	print('\033[96;2m' + ("\nTICK #1..." if tick == 0 else f"{tick+1}...") + '\033[0m', end=' ', flush=True)
+	
 	# Create a copy of the review_matrix so that recommendations in the same tick do not impact each other (all reccomendations are given "simultaneously")
 	# Without creating a copy, once a single positive rating is given all following users in the loop will have a high chance to be recommended that good
 	# Promotes randomness of opening spread(s) of reviews as different goods are selected by the users
@@ -78,11 +81,10 @@ for tick in range(const.NUMBER_OF_TICKS):
 	# After all Person's have been cycled through:
 	review_matrix.pop.reset_budgets()
 
-	# Run tests related to the experiment each tick
-	print('\033[96;2m' + ("\nTICK #1..." if tick == 0 else f"{tick+1}...") + '\033[0m', end=' ')
-
 print()
-print("".join([str(per) + f" = {green_or_red(int(np.nansum(per.reviews)), int(np.nansum(per.reviews)) > (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), int(np.nansum(per.reviews)) < (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), space_before=(const.RATING_SYSTEM_SCALE == 0), space_after=(const.RATING_SYSTEM_SCALE == 0))}\033[0m -> {green_or_red(round(per.generated_utility, 1), per.generated_utility >= (analysis.find_optimal_utility(per) * const.WELL_SERVED_PERCENT))}\033[0m ({round(analysis.find_optimal_utility(per), 1)})" for per in review_matrix.pop.people]))
+##### Format of matrix prinout #####
+# _Name's reviews: [ ·  ·  ·  ·  · ... ·  ·  ·  ·  · ] = Sum_of_Reviews → Generated_Utility (Optimal_Utility)
+print("".join([str(per) + f" = {green_or_red(int(np.nansum(per.reviews)), int(np.nansum(per.reviews)) > (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), int(np.nansum(per.reviews)) < (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), space_before=(const.RATING_SYSTEM_SCALE == 0), space_after=(const.RATING_SYSTEM_SCALE == 0))}\033[0m → {green_or_red(round(per.generated_utility, 1), per.generated_utility >= (analysis.find_optimal_utility(per) * const.WELL_SERVED_PERCENT))}\033[0m ({round(analysis.find_optimal_utility(per), 1)})" for per in review_matrix.pop.people]))
 print()
 
 # Optimal / actual utility, and percentage of optimal utility achieved
@@ -149,6 +151,9 @@ total_recommendations = []
 
 ### Run simulation:
 for tick in range(const.NUMBER_OF_TICKS):
+	# Print out current tick information
+	print('\033[96;2m' + ("TICK #1..." if tick == 0 else f"{tick+1}...") + '\033[0m', end=' ')
+  
 	# Check that there are still possible recommendations
 	if np.count_nonzero(np.isnan(review_matrix.matrix)) == 0:
 		break
@@ -190,9 +195,6 @@ for tick in range(const.NUMBER_OF_TICKS):
 
 	# After current set of recommendations done:
 	new_user.reset_budget()
-
-	# Run tests related to the experiment each tick
-	print('\033[96;2m' + ("TICK #1..." if tick == 0 else f"{tick+1}...") + '\033[0m', end=' ')
 
 print("\n" + str(new_user) + "\n")
 
