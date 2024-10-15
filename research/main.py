@@ -1,6 +1,33 @@
-"""The functions and operations that perform the experiment.
-Run the experiment using 'python research/main.py' from the root folder of the project."""
+#
+# This file is part of Recommender System Research (https://github.com/VerinFast/recommender-system-research).
+# Copyright (c) 2024  Cole Golding
+#
+# Recommender System Research is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Recommender System Research is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 
+###--------------------------------------------------------###
+"""The functions and operations that perform the experiment"""
+###--------------------------------------------------------###
+
+#############################################################################################################
+# The experiment can be run using any of the following terminal commands from the root folder of the project:
+###> python research/main.py
+###> python research/main.py [matrix_size]
+###> python research/main.py [matrix_size] [num_loops]
+#############################################################################################################
+
+import argparse # Use later for terminal commands for matrix_size and num_loops
 import copy
 import heapq
 import random

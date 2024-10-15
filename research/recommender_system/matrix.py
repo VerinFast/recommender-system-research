@@ -1,4 +1,24 @@
-"""The two matrices, the review matrix (RevMatrix) and the utility matrix (UtilMatrix), and various methods to measure them."""
+#
+# This file is part of Recommender System Research (https://github.com/VerinFast/recommender-system-research).
+# Copyright (c) 2024  Cole Golding
+#
+# Recommender System Research is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Recommender System Research is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+###------------------------------------------------------------------------------------------------------------------------###
+"""The two matrices, the review matrix (RevMatrix) and the utility matrix (UtilMatrix), and various methods to measure them"""
+###------------------------------------------------------------------------------------------------------------------------###
 
 import heapq
 import math
