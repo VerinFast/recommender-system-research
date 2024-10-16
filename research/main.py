@@ -56,7 +56,7 @@ print(f"\033[90;2mSEED [{const.SEED}]\033[0m")
 
 # Initialize matrices
 utility_matrix = mtx.UtilMatrix()
-review_matrix = mtx.RevMatrix(utility_matrix=utility_matrix.matrix)
+review_matrix = mtx.RevMatrix(utility_matrix.matrix)
 
 ### Run simulation:
 for tick in range(const.NUMBER_OF_TICKS):
@@ -180,7 +180,7 @@ total_recommendations = []
 for tick in range(const.NUMBER_OF_TICKS):
 	# Print out current tick information
 	print('\033[96;2m' + ("TICK #1..." if tick == 0 else f"{tick+1}...") + '\033[0m', end=' ')
-  
+	
 	# Check that there are still possible recommendations
 	if np.count_nonzero(np.isnan(review_matrix.matrix)) == 0:
 		break

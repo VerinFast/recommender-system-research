@@ -35,6 +35,12 @@ class UtilMatrix:
 	"""A matrix (2D numpy array) containing a Person's gain/loss in utility per good."""
 
 	def __init__(self, mean: float = const.UTILITY_MEAN, std: float = const.UTILITY_STD) -> None:
+		"""A matrix containing the utility associated with each good in a RevMatrix.
+
+		Args:
+				mean (float, optional): The mean of the utility distribution. Defaults to const.UTILITY_MEAN.
+				std (float, optional): The standard deviation of the utility distribution. Defaults to const.UTILITY_STD.
+		"""
 		self.mean = mean; self.std = std
 		self.matrix = np.random.normal(mean, std, (const.MATRIX_SIZE, const.MATRIX_SIZE))
 
@@ -58,8 +64,13 @@ class UtilMatrix:
 class RevMatrix:
 	"""A matrix (2D numpy array) containing user reviews."""
 
-	def __init__(self, pop: ppl.Population|type[ppl.Population] = ppl.Population, utility_matrix: NDArray[np.float_] = UtilMatrix().matrix) -> None:
-		self.pop = pop if not(callable(pop)) else pop()
+	def __init__(self, utility_matrix: NDArray[np.float_]) -> None:
+		"""Creates an empty matrix for reviews from the population.
+
+		Args:
+				utility_matrix (NDArray[np.float_]): The utility matrix associated with each good in the review matrix
+		"""
+		self.pop = ppl.Population()
 		self.matrix = self.pop.get_review_table()
 
 		# Make sure reviews are always a representation of the overall matrix

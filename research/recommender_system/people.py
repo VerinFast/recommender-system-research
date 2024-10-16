@@ -32,22 +32,21 @@ from . import controls as const
 class Person:
 	"""The Person class represents the individual users of the goods, and contains their names, reviews, and true utility."""
 
-	def __init__(self, name: str, reviews: NDArray[np.float_] = np.array([]), utility: NDArray[np.float_] = np.array([])) -> None:
+	def __init__(self, name: str) -> None:
+		"""Create a user.
+
+		Args:
+				name (str): The name of the new user
+		"""
 		self.name = name.title()
 		self.budget = const.USER_BUDGET
 		self.generated_utility: float = 0
 
 		# Assign reviews to a Person
-		if not reviews.any():
-			self.reviews = np.full(const.MATRIX_SIZE, np.nan)
-		else:
-			self.reviews = reviews
+		self.reviews = np.full(const.MATRIX_SIZE, np.nan)
 
 	 # Assign possible utility to a Person
-		if not utility.any():
-			self.utility = np.random.normal(const.UTILITY_MEAN, const.UTILITY_STD, const.MATRIX_SIZE)
-		else:
-			self.utility = utility
+		self.utility = np.random.normal(const.UTILITY_MEAN, const.UTILITY_STD, const.MATRIX_SIZE)
 
 	def __str__(self) -> str:
 			return f"\n{self.name}'s reviews: {self.reviews}"
@@ -77,8 +76,7 @@ class Population:
 		"""Create a population.
 
 		Args:
-				people (list[Person], optional): people (list[Person], optional): The list of type Person to be included in the population. If none is provided, a Population of size controls.MATRIX_SIZE is created.
-				full_gen (bool, optional): If True, create randomly generated reviews, else fill all reviews with np.nan
+				people (list[Person], optional): The list of type Person to be included in the population. If none is provided, a Population of size controls.MATRIX_SIZE is created.
 		"""
 		if not people:
 			# If no list provided, generate a population
