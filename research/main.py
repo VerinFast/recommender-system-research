@@ -76,7 +76,7 @@ for tick in range(const.NUMBER_OF_TICKS):
 	for i, (person, copy_of_person) in enumerate(zip(review_matrix.pop.people, copy_of_review_matrix.pop.people)):
 		recommendations = []
 
-		while person.budget >= const.CONSIDERATION_COST:
+		while person.budget >= const.CONSIDERATION_COST + const.USAGE_COST:
 			# Recommend the user a good while they still have a budget to consume
 			recommendations.append(good.recommend_good(copy_of_person, copy_of_review_matrix, previously_recommended=recommendations))
 
@@ -88,7 +88,7 @@ for tick in range(const.NUMBER_OF_TICKS):
 
 				# Calculate the user's Expected Utility from consuming the recommended good
 				true_utility = utility_matrix.matrix[i, recommendations[-1]]
-				noise = random.normalvariate(const.UTILITY_MEAN, const.UTILITY_STD)
+				noise = random.normalvariate(0, 1)
 				expected_utility = true_utility + noise
 
 				if person.budget >= const.USAGE_COST and expected_utility >= const.UTILITY_MEAN:
@@ -141,7 +141,7 @@ print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, review_ma
 print('\n\033[96;2m' + "Generating optimal utility matrix..." + '\033[0m\n')
 
 # Make a matrix containing the optimal good consumption for each user
-optimal_matrix = mtx.RevMatrix(utility_matrix=utility_matrix.matrix)
+optimal_matrix = mtx.RevMatrix(utility_matrix.matrix)
 
 for person in optimal_matrix.pop.people:
 	# Get the indexes of the goods that give the user the most utility
@@ -187,7 +187,7 @@ for tick in range(const.NUMBER_OF_TICKS):
 
 	recommendations = []
 
-	while new_user.budget >= const.CONSIDERATION_COST:
+	while new_user.budget >= const.CONSIDERATION_COST + const.USAGE_COST:
 		# Recommend the new user a good while they still have a budget to consume
 		recommendations.append(good.recommend_good(new_user, review_matrix, previously_recommended=recommendations))
 
@@ -199,7 +199,7 @@ for tick in range(const.NUMBER_OF_TICKS):
 
 			# Calculate the new user's Expected Utility from consuming the recommended good
 			true_utility = utility_matrix.matrix[-1, recommendations[-1]]
-			noise = random.normalvariate(const.UTILITY_MEAN, const.UTILITY_STD)
+			noise = random.normalvariate(0, 1)
 			expected_utility = true_utility + noise
 
 			# Save all recommendations that have a chance to be consumed by the user
