@@ -23,11 +23,12 @@
 #############################################################################################################
 # The experiment can be run using any of the following terminal commands from the root folder of the project:
 ###> python research/main.py
-###> python research/main.py [matrix_size]
-###> python research/main.py [matrix_size] [num_loops]
+###> python research/main.py [num_loops]
+###> python research/main.py [num_loops] [matrix_size]
+###> python research/main.py [num_loops] [matrix_size] [num_ticks]
 #############################################################################################################
 
-import argparse # Use later for terminal commands for matrix_size and num_loops
+import argparse
 import copy
 import heapq
 import random
@@ -39,10 +40,60 @@ from recommender_system import controls as const
 from recommender_system import goods as good
 from recommender_system import matrix as mtx
 from recommender_system import people as ppl
+from __init__ import *
 
+# Parse any command line arguments
+parser = argparse.ArgumentParser(
+	prog="RecommenderSystemResearch",
+	description=program_description,
+	epilog=copyright_statement,
+	formatter_class=MyFormatter
+)
 
-def green_or_red(string: str | int | float, green_logic: bool, red_logic: bool = True, space_before: bool = False, space_after: bool = False) -> str:
-	return ('\033[32m' + (' ' if space_before == True else '') if green_logic else ('\033[31m' if red_logic else (' ' if space_after == True else ''))) + str(string)
+# Add legal arguments to parser
+parser.add_argument(
+	'-w', '--warranty',
+	action='version',
+	version=copyright_w,
+	help='display the warranty notice'
+)
+parser.add_argument(
+	'-c', '--conditions',
+	action='version',
+	version=copyright_c,
+	help='display the redistribution conditions'
+)
+
+# Add experiment arguments to parser
+parser.add_argument(
+	'num_loops',
+	action='store',
+  nargs='?',
+	default=const.NUMBER_OF_EXPERIMENTS,
+	type=check_positive,
+  help="The number of times the experiment will run so statistically significant results can be attained"
+)
+parser.add_argument(
+	'matrix_size',
+	action='store',
+  nargs='?',
+	default=const.MATRIX_SIZE,
+	type=check_positive,
+  help="The size (# of users / goods) used to create a (n x n) matrix for the experiment"
+)
+parser.add_argument(
+	'num_ticks',
+	action='store',
+  nargs='?',
+	default=const.NUMBER_OF_TICKS,
+	type=check_positive,
+  help="The amount of time / number of loops that the experiment should run for"
+)
+
+parse_args = parser.parse_args() # Parses arguments
+const.NUMBER_OF_EXPERIMENTS = parse_args.num_loops
+const.MATRIX_SIZE = parse_args.matrix_size
+const.NUMBER_OF_TICKS = parse_args.num_ticks
 
 print(f"\033[90;2mSEED [{const.SEED}]\033[0m")
 
@@ -180,7 +231,7 @@ total_recommendations = []
 for tick in range(const.NUMBER_OF_TICKS):
 	# Print out current tick information
 	print('\033[96;2m' + ("TICK #1..." if tick == 0 else f"{tick+1}...") + '\033[0m', end=' ')
-	
+
 	# Check that there are still possible recommendations
 	if np.count_nonzero(np.isnan(review_matrix.matrix)) == 0:
 		break
