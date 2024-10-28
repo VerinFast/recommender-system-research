@@ -108,7 +108,7 @@ class Population:
 		"""Combine all individual 1D numpy arrays stored in people -> list[Person] into a 2D numpy array
 
 		Returns:
-				NDArray[np.float_]: A 2D numpy array of all reviews
+				NDArray[np.float]: A 2D numpy array of all reviews
 		"""
 		return np.vstack(list(map(lambda x : x.reviews, self.people)))
 
@@ -117,7 +117,7 @@ class Population:
 		This allows them to be manipulated through the greater matrix or through Person.reviews so that a user's reviews stay consistent.
 
 		Args:
-				matrix (NDArray[np.float_]): The matrix to be split up and copied
+				matrix (NDArray[np.float]): The matrix to be split up and copied
 		"""
 		for i, person in enumerate(self.people):
 			person.reviews = matrix[i,:]

@@ -42,7 +42,7 @@ from recommender_system import matrix as mtx
 from recommender_system import people as ppl
 from __init__ import *
 
-# Parse any command line arguments
+# Set up command line parser
 parser = argparse.ArgumentParser(
 	prog="RecommenderSystemResearch",
 	description=program_description,
@@ -50,7 +50,7 @@ parser = argparse.ArgumentParser(
 	formatter_class=MyFormatter
 )
 
-# Add legal arguments to parser
+# Add legal flags to parser
 parser.add_argument(
 	'-w', '--warranty',
 	action='version',
@@ -64,33 +64,34 @@ parser.add_argument(
 	help='display the redistribution conditions'
 )
 
-# Add experiment arguments to parser
+# Add experimental positional arguments to parser
 parser.add_argument(
 	'num_loops',
 	action='store',
-  nargs='?',
+	nargs='?',
 	default=const.NUMBER_OF_EXPERIMENTS,
 	type=check_positive,
-  help="The number of times the experiment will run so statistically significant results can be attained"
+	help="The number of times the experiment will run so statistically significant results can be attained"
 )
 parser.add_argument(
 	'matrix_size',
 	action='store',
-  nargs='?',
+	nargs='?',
 	default=const.MATRIX_SIZE,
 	type=check_positive,
-  help="The size (# of users / goods) used to create a (n x n) matrix for the experiment"
+	help="The size (# of users / goods) used to create a (n x n) matrix for the experiment"
 )
 parser.add_argument(
 	'num_ticks',
 	action='store',
-  nargs='?',
+	nargs='?',
 	default=const.NUMBER_OF_TICKS,
 	type=check_positive,
-  help="The amount of time / number of loops that the experiment should run for"
+	help="The amount of time / number of loops that the experiment should run for"
 )
 
-parse_args = parser.parse_args() # Parses arguments
+# Parse arguments and assign to variables defined in controls.py
+parse_args = parser.parse_args()
 const.NUMBER_OF_EXPERIMENTS = parse_args.num_loops
 const.MATRIX_SIZE = parse_args.matrix_size
 const.NUMBER_OF_TICKS = parse_args.num_ticks
@@ -177,10 +178,17 @@ print()
 print(f"\033[96m{round((sum(analysis.is_well_served(per, const.WELL_SERVED_PERCENT) for per in review_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of the population was \"well served\" (achieved {round(const.WELL_SERVED_PERCENT * 100)}% of max utility)")
 print()
 
+# Define analysis constants
+analyze_quarter_of_goods = (const.ANALYZE_N_GOODS / 4).__ceil__()
+analyze_half_of_goods = (const.ANALYZE_N_GOODS / 2).__ceil__()
+
 # Percentage of users who consumed all of the n most popular goods
-print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, review_matrix.matrix, 1) for per in review_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of users used the most popular good")
-print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, review_matrix.matrix, (const.ANALYZE_N_GOODS / 4).__ceil__()) for per in review_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of users used the {(const.ANALYZE_N_GOODS / 4).__ceil__()} most popular goods")
-print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, review_matrix.matrix, (const.ANALYZE_N_GOODS / 2).__ceil__()) for per in review_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of users used the {(const.ANALYZE_N_GOODS / 2).__ceil__()} most popular goods")
+num_used_most_pop_1_good = sum(analysis.all_most_popular_recommended(per, review_matrix.matrix, 1) for per in review_matrix.pop.people)
+num_used_most_pop_quarter_of_goods = sum(analysis.all_most_popular_recommended(per, review_matrix.matrix, analyze_quarter_of_goods) for per in review_matrix.pop.people)
+num_used_most_pop_half_of_goods = sum(analysis.all_most_popular_recommended(per, review_matrix.matrix, analyze_half_of_goods) for per in review_matrix.pop.people)
+print(f"\033[96m{round((num_used_most_pop_1_good / const.MATRIX_SIZE) * 100)}%\033[0m of users used the most popular good {f"(\033[96m{round((sum(filter(lambda x: x != -1, list(analysis.all_most_popular_recommended_derived_pos_util(per, review_matrix.matrix, 1) for per in review_matrix.pop.people))) / num_used_most_pop_1_good) * 100)}%\033[0m of those users gained positive utility from it)" if num_used_most_pop_1_good != 0 else ""}")
+print(f"\033[96m{round((num_used_most_pop_quarter_of_goods / const.MATRIX_SIZE) * 100)}%\033[0m of users used the {analyze_quarter_of_goods} most popular goods {f"(\033[96m{round((sum(filter(lambda x: x != -1, list(analysis.all_most_popular_recommended_derived_pos_util(per, review_matrix.matrix, analyze_quarter_of_goods) for per in review_matrix.pop.people))) / num_used_most_pop_quarter_of_goods) * 100)}%\033[0m of those users gained positive utility from all of them)" if num_used_most_pop_quarter_of_goods != 0 else ""}")
+print(f"\033[96m{round((num_used_most_pop_half_of_goods / const.MATRIX_SIZE) * 100)}%\033[0m of users used the {analyze_half_of_goods} most popular goods {f"(\033[96m{round((sum(filter(lambda x: x != -1, list(analysis.all_most_popular_recommended_derived_pos_util(per, review_matrix.matrix, analyze_half_of_goods) for per in review_matrix.pop.people))) / num_used_most_pop_half_of_goods) * 100)}%\033[0m of those users gained positive utility from all of them)" if num_used_most_pop_half_of_goods != 0 else ""}")
 
 
 
@@ -207,8 +215,8 @@ for person in optimal_matrix.pop.people:
 
 # Run above analysis questions on a "perfect" model
 print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, optimal_matrix.matrix, 1) for per in optimal_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of optimal users used the most popular good")
-print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, optimal_matrix.matrix, (const.ANALYZE_N_GOODS / 4).__ceil__()) for per in optimal_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of optimal users used the {(const.ANALYZE_N_GOODS / 4).__ceil__()} most popular goods")
-print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, optimal_matrix.matrix, (const.ANALYZE_N_GOODS / 2).__ceil__()) for per in optimal_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of optimal users used the {(const.ANALYZE_N_GOODS / 2).__ceil__()} most popular goods")
+print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, optimal_matrix.matrix, analyze_quarter_of_goods) for per in optimal_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of optimal users used the {analyze_quarter_of_goods} most popular goods")
+print(f"\033[96m{round((sum(analysis.all_most_popular_recommended(per, optimal_matrix.matrix, analyze_half_of_goods) for per in optimal_matrix.pop.people) / const.MATRIX_SIZE) * 100)}%\033[0m of optimal users used the {analyze_half_of_goods} most popular goods")
 
 
 

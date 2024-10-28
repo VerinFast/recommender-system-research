@@ -122,6 +122,26 @@ def all_most_popular_recommended(user: ppl.Person, matrix: NDArray[np.float_], t
 
 	return 1 if num_most_popular_recommended(user, matrix, top_results) == top_results else 0
 
+def all_most_popular_recommended_derived_pos_util(user: ppl.Person, matrix: NDArray[np.float_], top_results: int) -> int:
+
+	# If user has not used all n most popular goods, then return ignore result
+	if all_most_popular_recommended(user, matrix, top_results) == 0: return -1
+
+	# Get indexes of the most popular goods
+	most_popular = find_most_popular(matrix, top_results)
+
+	# Get indexes of all used goods
+	used = np.argwhere(~np.isnan(user.reviews)).flatten()
+
+	# Get shared indexes between most popular and used goods
+	shared = used[np.isin(used, most_popular)]
+
+	# Count number of popular, used goods that have a positive (greater than mean) utility
+	total_pos = 0
+	for i in range(len(shared)): total_pos += user.utility[shared[i]]
+
+	return 1 if total_pos > (len(shared) * const.UTILITY_MEAN) else 0
+
 def likely_recommended(most: int, least: int, count: int = 1) -> str:
 	"""Return how much more likely the most popular good(s) were recommended than the least popular good(s).
 
