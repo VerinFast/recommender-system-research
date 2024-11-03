@@ -116,8 +116,8 @@ if (not blank_print): print(dim_grey + f"SEED [{const.SEED}]" + reset)
 
 
 for i in range(const.NUMBER_OF_EXPERIMENTS):
-	if (not blank_print): print(dim_cyan + f"\n{i+1}) " + reset, end='') # Display the current experiment number [1 to const.NUMBER_OF_EXPERIMENTS]
 	if (full_print and i != 0): print("\n" + "═"*150 + "\n") # Print a thick dividing line between experimental printouts
+	if (not blank_print): print(dim_cyan + f"\n{i+1}) " + reset, end='') # Display the current experiment number [1 to const.NUMBER_OF_EXPERIMENTS]
 
 	###################################################################################################
 	################################# Generate Base Population Matrix #################################
@@ -178,16 +178,15 @@ for i in range(const.NUMBER_OF_EXPERIMENTS):
 		review_matrix.pop.reset_budgets()
 
 	if (not blank_print): print()
-	##### Format of matrix prinout #####
+	##### Format of matrix printout #####
 	# _Name's reviews: [ ·  ·  ·  ·  · ... ·  ·  ·  ·  · ] = Sum_of_Reviews → Generated_Utility (Optimal_Utility)
-	if (full_print): print("".join([str(per) + f" = {green_or_red(int(np.nansum(per.reviews)), int(np.nansum(per.reviews)) > (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), int(np.nansum(per.reviews)) < (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), space_before=(const.RATING_SYSTEM_SCALE == 0), space_after=(const.RATING_SYSTEM_SCALE == 0))}{reset} → {green_or_red(round(per.generated_utility, 1), per.generated_utility >= (analysis.find_optimal_utility(per) * const.WELL_SERVED_PERCENT))}{reset} ({round(analysis.find_optimal_utility(per), 1)}) [{sum(~np.isnan(per.reviews))}]" for per in review_matrix.pop.people]))
+	if (full_print): print("".join([str(per) + f" = {green_or_red(int(np.nansum(per.reviews)), int(np.nansum(per.reviews)) > (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), int(np.nansum(per.reviews)) < (0 if const.RATING_SYSTEM_SCALE == 0 else (~np.isnan(per.reviews)).sum(0) * (((const.RATING_SYSTEM_SCALE + 1) / 2) if (const.RATING_SYSTEM_MEAN < 0 or const.RATING_SYSTEM_MEAN > const.RATING_SYSTEM_SCALE) else const.RATING_SYSTEM_MEAN)), space_before=(const.RATING_SYSTEM_SCALE == 0), space_after=(const.RATING_SYSTEM_SCALE == 0))}{reset} → {green_or_red(round(per.generated_utility, 1), per.generated_utility >= (analysis.find_optimal_utility(per) * const.WELL_SERVED_PERCENT))}{reset} ({round(analysis.find_optimal_utility(per), 1)})" for per in review_matrix.pop.people]))
 	if (full_print): print()
 
 	# Optimal / actual utility, and percentage of optimal utility achieved
 	max_util = sum(list(map(analysis.find_optimal_utility, review_matrix.pop.people)))
 	actual_util = sum(per.generated_utility for per in review_matrix.pop.people)
-	total_revs.append(np.sum(~np.isnan(review_matrix.matrix))) 																		# REMOVE LATER
-	if (full_print): print(f"Maximum User Utility = {cyan}{round(max_util, 1)}{reset} [{total_revs[-1]}]")
+	if (full_print): print(f"Maximum User Utility = {cyan}{round(max_util, 1)}{reset}")
 	if (full_print): print(f"Actual User Utility = {cyan}{round(actual_util, 1)}{reset}")
 	if (full_print): print(f"{underline_cyan}{round((actual_util / max_util) * 100)}%{reset} of optimal utility was achieved")
 	if (full_print): print()
@@ -243,7 +242,7 @@ for i in range(const.NUMBER_OF_EXPERIMENTS):
 	###################################################################################################
 	################################ Generate New User Recommendations ################################
 	###################################################################################################
-	if (full_print): print("\n" + "-"*100 + "\n")
+	if (full_print): print("\n" + "-"*110 + "\n")
 
 	# Add a new user to the system
 	new_user = ppl.Person("_User")
