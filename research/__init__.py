@@ -53,8 +53,28 @@ This program is meant to showcase the possible lossy inefficiences found in reco
 If no positional arguments are provided at runtime, the program will use the defaults stored in the research/controls.py file.
 """
 
+
+
+### Color Formatters ###
+
+reset = f'{Style.reset}'
+dim = f'{Style.dim}'
+
+cyan = f'{Fore.cyan}'
+green = f'{Fore.green}'
+grey = f'{Fore.dark_gray}'
+red = f'{Fore.red}'
+
+dim_cyan = f'{dim}{cyan}'
+dim_grey = f'{dim}{grey}'
+underline_cyan = f'{Style.underline}{cyan}'
+
 def green_or_red(string: str | int | float, green_logic: bool, red_logic: bool = True, space_before: bool = False, space_after: bool = False) -> str:
-	return (Fore.green + (' ' if space_before == True else '') if green_logic else (Fore.red if red_logic else (' ' if space_after == True else ''))) + str(string)
+	return (green + (' ' if space_before == True else '') if green_logic else (Fore.red if red_logic else (' ' if space_after == True else ''))) + str(string)
+
+
+
+### argparse stub class and actiontype ###
 
 class MyFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter):
 	"""A stubclass designed to combine two default argparse formatters"""; pass
@@ -75,7 +95,7 @@ def check_positive(value) -> int:
 	try:
 		value = int(value)
 		if value <= 0:
-			raise argparse.ArgumentTypeError(f"{value} is not a positive integer")
+			raise argparse.ArgumentTypeError(red + f"{value} is not a positive integer\n" + reset)
 	except ValueError:
-		raise Exception(f"{value} is not an integer")
+		raise argparse.ArgumentTypeError(red + f"\"{value}\" is not a positive integer\n" + reset)
 	return value

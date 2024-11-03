@@ -23,7 +23,6 @@
 import random
 import string
 
-import names
 import numpy as np
 from numpy.typing import NDArray
 
@@ -57,8 +56,8 @@ class Person:
 		self.budget = const.USER_BUDGET
 
 	@staticmethod
-	def rand_name() -> str:
-		"""Generate a random name by pulling from the 1990 US Census.
+	def rand_name(len: int) -> str:
+		"""Generate a random name using alpha characters.
 
 		Args:
 				len (int): The length of the name
@@ -66,7 +65,7 @@ class Person:
 		Returns:
 				str: The randomly generated name in Title Case
 		"""
-		return names.get_first_name()
+		return ''.join(random.choices(string.ascii_lowercase, k=len)).title()
 
 
 
@@ -89,7 +88,7 @@ class Population:
 		return "\n".join([str(ppl) for ppl in self.people])
 
 	def generate_population(self) -> list[Person]:
-		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated names and blank reviews.
+		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated "names" and blank reviews.
 
 		Returns:
 				list[Person]: A list of Person objects with reviews
@@ -97,8 +96,8 @@ class Population:
 		pop: list[Person] = []
 		
 		for i in range(const.MATRIX_SIZE):
-			# Randomly generate a name
-			name = Person.rand_name()
+			# Randomly generate a name with 5 characters
+			name = Person.rand_name(len=5)
 
 			# Create blank list of reviews (filled with np.nan)
 			pop.append(Person(name))

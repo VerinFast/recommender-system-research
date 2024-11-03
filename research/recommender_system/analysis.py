@@ -23,6 +23,7 @@
 import heapq
 
 import numpy as np
+from colored import Fore, Style
 from numpy.typing import NDArray
 
 from . import controls as const
@@ -157,13 +158,13 @@ def likely_recommended(most: int, least: int, count: int = 1) -> str:
 	if most == 0 and least == 0:
 		return f"The {'' if count == 1 else f'{count} '}most popular good{'' if count == 1 else 's'} and {'' if count == 1 else f'{count} '}least popular good{'' if count == 1 else 's'} were not recommended"
 	elif most == 0:
-		return f"The {'' if count == 1 else f'{count} '}least popular good{f' \033[2m({least}x)\033[0m was' if count == 1 else f's \033[2m({least}x)\033[0m were'} recommended, but the {'' if count == 1 else f'{count} '}most popular good{' was' if count == 1 else 's were'} not"
+		return f"The {'' if count == 1 else f'{count} '}least popular good{f' {Style.dim}({least}x){Style.reset} was' if count == 1 else f's {Style.dim}({least}x){Style.reset} were'} recommended, but the {'' if count == 1 else f'{count} '}most popular good{' was' if count == 1 else 's were'} not"
 	elif least == 0:
-		return f"The {'' if count == 1 else f'{count} '}most popular good{f' \033[2m({most}x)\033[0m was' if count == 1 else f's \033[2m({most}x)\033[0m were'} recommended, but the {'' if count == 1 else f'{count} '}least popular good{' was' if count == 1 else 's were'} not"
+		return f"The {'' if count == 1 else f'{count} '}most popular good{f' {Style.dim}({most}x){Style.reset} was' if count == 1 else f's {Style.dim}({most}x){Style.reset} were'} recommended, but the {'' if count == 1 else f'{count} '}least popular good{' was' if count == 1 else 's were'} not"
 	elif most == least:
-		return f"The {'' if count == 1 else f'{count} '}most popular good{f' \033[2m({most}x)\033[0m was' if count == 1 else f's \033[2m({most}x)\033[0m were'} recommended the same amount of times as the {'' if count == 1 else f'{count} '}least popular good{f' \033[2m({least}x)\033[0m' if count == 1 else f's \033[2m({least}x)\033[0m'}"
+		return f"The {'' if count == 1 else f'{count} '}most popular good{f' {Style.dim}({most}x){Style.reset} was' if count == 1 else f's {Style.dim}({most}x){Style.reset} were'} recommended the same amount of times as the {'' if count == 1 else f'{count} '}least popular good{f' {Style.dim}({least}x){Style.reset}' if count == 1 else f's {Style.dim}({least}x){Style.reset}'}"
 	else:
-		return f"The {'' if count == 1 else f'{count} '}most popular good{f' \033[2m({most}x)\033[0m was' if count == 1 else f's \033[2m({most}x)\033[0m were'} recommended \033[96m{round(most / least, 1)}x\033[0m more than the {'' if count == 1 else f'{count} '}least popular good{f' \033[2m({least}x)\033[0m' if count == 1 else f's \033[2m({least}x)\033[0m'}"
+		return f"The {'' if count == 1 else f'{count} '}most popular good{f' {Style.dim}({most}x){Style.reset} was' if count == 1 else f's {Style.dim}({most}x){Style.reset} were'} recommended {Fore.cyan}{round(most / least, 1)}x{Style.reset} more than the {'' if count == 1 else f'{count} '}least popular good{f' {Style.dim}({least}x){Style.reset}' if count == 1 else f's {Style.dim}({least}x){Style.reset}'}"
 
 def find_optimal_utility(user: ppl.Person) -> float:
 	"""Find the optimal utility for the user.
