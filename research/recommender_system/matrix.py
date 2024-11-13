@@ -60,6 +60,19 @@ class UtilMatrix:
 		# Add new user to matrix
 		self.matrix = np.vstack([self.matrix, user_utility_array])
 
+	def remove_user(self, user: ppl.Person, pop: ppl.Population) -> None:
+		"""Removes a user from the utility matrix.
+
+		Args:
+				user (ppl.Person): The user to be removed from the utility matrix
+		"""
+		# Find user's location in the Population list
+		user_index = ppl.Population.get_user_index(pop, user)
+
+		# Remove the user's utility array from the utility matrix
+		self.matrix = np.delete(self.matrix, user_index, 0)
+
+
 
 class RevMatrix:
 	"""A matrix (2D numpy array) containing user reviews."""
@@ -195,3 +208,18 @@ class RevMatrix:
 		# Add new user to matrix
 		self.matrix = np.vstack([self.matrix, user.reviews])
 		user.reviews = self.matrix[-1,:]
+
+	def remove_user(self, user: ppl.Person) -> None:
+		"""Removes a new user from the review matrix.
+
+		Args:
+				user (ppl.Person): The user to be removed from the review matrix
+		"""
+		# Find user's location in the Population list
+		user_index = ppl.Population.get_user_index(self.pop, user)
+
+		# Delete the user from the Population
+		self.pop.people.pop(user_index)
+
+		# Remove the user's review array from the review matrix
+		self.matrix = np.delete(self.matrix, user_index, 0)
