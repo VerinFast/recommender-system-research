@@ -26,7 +26,7 @@ MATRIX_SIZE: int = 20
 NUMBER_OF_TICKS: int = 10
 """The amount of time / number of loops that the experiment should run for"""
 
-NUMBER_OF_EXPERIMENTS: int = 1
+NUMBER_OF_EXPERIMENTS: int = 10
 """The number of times the experiment will run so statistically significant results can be attained"""
 
 UTILITY_MEAN: float = 4

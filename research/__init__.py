@@ -53,6 +53,28 @@ This program is meant to showcase the possible lossy inefficiences found in reco
 If no positional arguments are provided at runtime, the program will use the defaults stored in the research/controls.py file.
 """
 
+from dataclasses import dataclass
+
+@dataclass
+class Test:
+  max_user_util: float = 0
+  actual_user_util: float = 0
+  num_well_served: float = 0
+  used_most_pop_one: float = 0; gained_pos_util_one: float = 0
+  used_most_pop_quarter: float = 0; gained_pos_util_quarter: float = 0
+  used_most_pop_half: float = 0; gained_pos_util_half: float = 0
+  optimal_used_most_pop_one: float = 0
+  optimal_used_most_pop_quarter: float = 0
+  optimal_used_most_pop_half: float = 0
+  # New user measurments
+  most_pop_received: float = 0
+  one_most_pop_good_rec: int = 0; one_least_pop_good_rec: int = 0
+  half_most_pop_good_rec: int = 0; half_least_pop_good_rec: int = 0
+  full_most_pop_good_rec: int = 0; full_least_pop_good_rec: int = 0
+  avg_new_user_util: float = 0
+  avg_most_pop_util: float = 0
+  avg_actual_util: float = 0
+  avg_rand_util: float = 0
 
 
 ### Color Formatters ###
@@ -65,6 +87,7 @@ green = f'{Fore.green}'
 grey = f'{Fore.dark_gray}'
 red = f'{Fore.red}'
 
+bold_cyan = f'{Style.bold}{cyan}'
 dim_cyan = f'{dim}{cyan}'
 dim_grey = f'{dim}{grey}'
 underline_cyan = f'{Style.underline}{cyan}'
