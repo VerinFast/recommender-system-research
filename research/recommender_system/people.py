@@ -20,9 +20,7 @@
 """The set of classes representing individual and groups of users"""
 ###--------------------------------------------------------------###
 
-import random
-import string
-
+import names
 import numpy as np
 from numpy.typing import NDArray
 
@@ -49,23 +47,11 @@ class Person:
 		self.utility = np.random.normal(const.UTILITY_MEAN, const.UTILITY_STD, const.MATRIX_SIZE)
 
 	def __str__(self) -> str:
-			return f"\n{self.name}'s reviews: {self.reviews}"
+		return f"\n{self.name}'s reviews: {self.reviews}"
 
 	def reset_budget(self) -> None:
 		"""Reset the user's budget to the constant defined default."""
 		self.budget = const.USER_BUDGET
-
-	@staticmethod
-	def rand_name(len: int) -> str:
-		"""Generate a random name using alpha characters.
-
-		Args:
-				len (int): The length of the name
-
-		Returns:
-				str: The randomly generated name in Title Case
-		"""
-		return ''.join(random.choices(string.ascii_lowercase, k=len)).title()
 
 
 
@@ -88,7 +74,7 @@ class Population:
 		return "\n".join([str(ppl) for ppl in self.people])
 
 	def generate_population(self) -> list[Person]:
-		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated "names" and blank reviews.
+		"""Create a const.MATRIX_SIZE length list of "people" containing randomly generated names and blank reviews.
 
 		Returns:
 				list[Person]: A list of Person objects with reviews
@@ -96,8 +82,10 @@ class Population:
 		pop: list[Person] = []
 		
 		for i in range(const.MATRIX_SIZE):
-			# Randomly generate a name with 5 characters
-			name = Person.rand_name(len=5)
+			# Randomly generate a unique, 5 character name
+			name = names.get_first_name()
+			while (any(name == user.name for user in pop) or len(name) != 5):
+				name = names.get_first_name()
 
 			# Create blank list of reviews (filled with np.nan)
 			pop.append(Person(name))
@@ -111,6 +99,17 @@ class Population:
 				NDArray[np.float]: A 2D numpy array of all reviews
 		"""
 		return np.vstack(list(map(lambda x : x.reviews, self.people)))
+
+	def get_user_index(self, user: Person) -> int:
+		"""Get the index of a specific user within the Population's list.
+
+		Args:
+				user (Person): The user to search for
+
+		Returns:
+				int: The index of the user
+		"""
+		return next((i for i, per in enumerate(self.people) if (per.name == user.name and (per.reviews == user.reviews).all())), const.MATRIX_SIZE)
 
 	def soft_copy_matrix(self, matrix: NDArray[np.float_]) -> None:
 		"""Makes sure each Person-in-Population's reviews are a view of the matrix and not an independent copy.
