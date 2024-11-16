@@ -20,14 +20,14 @@
 """A list of constant variables that can be used to manipulate the experiment"""
 ###--------------------------------------------------------------------------###
 
+NUMBER_OF_EXPERIMENTS: int = 10
+"""The number of times the experiment will run so statistically significant results can be attained"""
+
 MATRIX_SIZE: int = 20
 """The size (# of users / goods) used to create a (n x n) matrix for the experiment"""
 
 NUMBER_OF_TICKS: int = 10
 """The amount of time / number of loops that the experiment should run for"""
-
-NUMBER_OF_EXPERIMENTS: int = 10
-"""The number of times the experiment will run so statistically significant results can be attained"""
 
 UTILITY_MEAN: float = 4
 """The mean used to generate the users' utility per good"""
