@@ -67,7 +67,7 @@ class Test:
   optimal_used_most_pop_quarter: float = 0
   optimal_used_most_pop_half: float = 0
   # New user measurments
-  most_pop_received: float = 0
+  most_pop_used: float = 0
   one_most_pop_good_rec: int = 0; one_least_pop_good_rec: int = 0
   half_most_pop_good_rec: int = 0; half_least_pop_good_rec: int = 0
   full_most_pop_good_rec: int = 0; full_least_pop_good_rec: int = 0
