@@ -49,7 +49,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  """
 
 program_description = """
-This program is meant to showcase the possible lossy inefficiences found in recommender systems.
+This program is meant to showcase the possible lossy inefficiencies found in recommender systems.
 If no positional arguments are provided at runtime, the program will use the defaults stored in the research/controls.py file.
 """
 
@@ -66,7 +66,7 @@ class Test:
   optimal_used_most_pop_one: float = 0
   optimal_used_most_pop_quarter: float = 0
   optimal_used_most_pop_half: float = 0
-  # New user measurments
+  # New user measurements
   most_pop_used: float = 0
   one_most_pop_good_rec: int = 0; one_least_pop_good_rec: int = 0
   half_most_pop_good_rec: int = 0; half_least_pop_good_rec: int = 0

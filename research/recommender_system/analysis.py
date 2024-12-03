@@ -170,7 +170,7 @@ def find_optimal_utility(user: ppl.Person) -> float:
 	"""Find the optimal utility for the user.
 
 	Args:
-			user (ppl.Person): The user to run the anlysis on
+			user (ppl.Person): The user to run the analysis on
 
 	Returns:
 			float: The optimal utility for he user if they had picked the highest utility good each time
@@ -189,7 +189,7 @@ def find_popular_utility(user: ppl.Person, matrix: NDArray[np.float_]) -> float:
 			matrix (NDArray[np.float_]): The matrix filled with user reviews
 
 	Returns:
-			float: The utitility of the top_results most popular goods for the user
+			float: The utility of the top_results most popular goods for the user
 	"""
 
 	popular_idxs = find_most_popular(matrix, sum(~np.isnan(user.reviews)))

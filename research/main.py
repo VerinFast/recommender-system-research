@@ -142,7 +142,7 @@ for i in range(const.NUMBER_OF_EXPERIMENTS):
 		# Print out current tick information
 		if (not blank_print): print(dim_cyan + ("TICK #1..." if tick == 0 else f"{tick+1}...") + reset, end=' ', flush=True)
 		
-		# Create a copy of the review_matrix so that recommendations in the same tick do not impact each other (all reccomendations are given "simultaneously")
+		# Create a copy of the review_matrix so that recommendations in the same tick do not impact each other (all recommendations are given "simultaneously")
 		# Without creating a copy, once a single positive rating is given all following users in the loop will have a high chance to be recommended that good
 		# Promotes randomness of opening spread(s) of reviews as different goods are selected by the users
 		copy_of_review_matrix = copy.deepcopy(review_matrix)

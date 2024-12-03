@@ -64,7 +64,7 @@ def recommend_good(user: ppl.Person, matrix: mtx.RevMatrix, previously_recommend
 	Args:
 			user (ppl.Person): The Person to recommend a good for
 			matrix (mtx.RevMatrix): The list of reviews to compare self to
-			previously_recommended(list[int], optional): A list of indexes to ignore, fill with past recommendations to get new ones recommneded
+			previously_recommended(list[int], optional): A list of indexes to ignore, fill with past recommendations to get new ones recommended
 
 	Returns:
 			int: The index of the recommended good, if no available recommendations are possible (all goods have been used), the size of the matrix is returned instead.
